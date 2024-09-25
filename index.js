@@ -1,92 +1,67 @@
-const retrieve = () => {
-    let entries = localStorage.getItem("userentries");
-    if (entries) {
-        entries = JSON.parse(entries);
-    } else {
-        entries = [];
-    }
-    return entries;
-};
-const dob_check = (dob) => {
-    let dobDate = new Date(dob);
-    let currentDate = new Date();
+document.getElementById('registrationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-    let yearDiff = currentDate.getFullYear() - dobDate.getFullYear();
-    let monthDiff = currentDate.getMonth() - dobDate.getMonth();
-    let dayDiff = currentDate.getDate() - dobDate.getDate();
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        yearDiff--;
-    }
-    return yearDiff;
-};
+    // Here, you can add any validation or processing logic
 
-const agevalid = (dobInput) => {
-    const dob = dobInput.value;
-    const age = dob_check(dob);
-    if (age < 18 || age > 55) {
-        dobInput.setCustomValidity("Age must be between 18 and 55.");
-    } else {
-        dobInput.setCustomValidity("");
-    }
-    dobInput.reportValidity(); 
-};
+    // For demonstration, we'll just show a success message
+    document.getElementById('message').innerText = `Registration successful for ${username}!`;
 
-const saveForm = (event) => {
-    event.preventDefault(); 
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const dobInput = document.getElementById("dob");
-    const dob = dobInput.value;
-    const termandcondn = document.getElementById("Terms").checked;
+    // Optionally, clear the form fields
+    this.reset();
+});
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
 
-    
-    let isValidAge = agevalid(dobInput);
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    if (!document.forms["forms"].reportValidity()) {
-        if (!isValidAge) {
-            dobInput.value = "";
-            isValidAge = agevalid(dobInput); 
-        }
-        if (!isValidAge) {
-            return; 
-        }
-    }
-    
-    const data = {
-        name,
-        email,
-        password,
-        dob,
-        termandcondn
-    };
+h1 {
+    text-align: center;
+}
 
-    let userentries = retrieve();
-    userentries.push(data);
-    localStorage.setItem("userentries", JSON.stringify(userentries));
-    display();
-  
-    document.forms["forms"].reset();
-    dobInput.setCustomValidity("");
-};
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
 
-const display = () => {
-    const entries = retrieve();
-    const tableentries = entries.map((entry) => {
-        const namespace = <td>${entry.name}</td>;
-        const emailspace = <td>${entry.email}</td>;
-        const passwordspace = <td>${entry.password}</td>;
-        const dobspace = <td>${entry.dob}</td>;
-        const termsspace = <td>${entry.termandcondn ? 'true' : 'false'}</td>;
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
-        return <tr>${namespace}${emailspace}${passwordspace}${dobspace}${termsspace}</tr>;
-    }).join("\n");
-    
-    const table = <table><tr><th>Name</th><th>Email</th><th>Password</th><th>Dob</th><th>Accepted Terms?</th></tr>${tableentries}</table>;
-    
-    let details = document.getElementById("user-entries");
-    details.innerHTML = table;
-};
-document.getElementById("forms").addEventListener("submit", saveForm);
-display();
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#message {
+    margin-top: 10px;
+    text-align: center;
+}
