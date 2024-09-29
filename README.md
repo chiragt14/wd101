@@ -1,16 +1,16 @@
-wd101
-document.getElementById('registrationForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
 
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-    // Here, you can add any validation or processing logic
+th, td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+}
 
-    // For demonstration, we'll just show a success message
-    document.getElementById('message').innerText = `Registration successful for ${username}!`;
-
-    // Optionally, clear the form fields
-    this.reset();
-});
