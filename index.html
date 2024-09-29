@@ -4,26 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Register</h1>
-        <form id="registrationForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
+<h1>Registration Form</h1>
+<form id="registrationForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required><br>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
+    <label for="email">Email:</label>
+    <input type="email" id="email" required><br>
 
-            <button type="submit">Register</button>
-        </form>
-        <div id="message"></div>
-    </div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required><br>
 
-    <script src="script.js"></script>
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" required><br>
+
+    <label>
+        <input type="checkbox" id="terms" required>
+        Accepted terms?
+    </label><br>
+
+    <button type="submit">Register</button>
+</form>
+
+<h2>Registered Users</h2>
+<table id="usersTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Dob</th>
+            <th>Accepted terms?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Entries will be inserted here -->
+    </tbody>
+</table>
+
+<script>
+    const form = document.getElementById('registrationForm');
+    const usersTable = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const dob = document.getElementById('dob').value;
+        const termsAccepted = document.getElementById('terms').checked ? 'Yes' : 'No';
+
+        const newRow = usersTable.insertRow();
+        newRow.insertCell(0).textContent = name;
+        newRow.insertCell(1).textContent = email;
+        newRow.insertCell(2).textContent = password;
+        newRow.insertCell(3).textContent = dob;
+        newRow.insertCell(4).textContent = termsAccepted;
+
+        form.reset();
+    });
+</script>
+
 </body>
 </html>
