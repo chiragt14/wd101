@@ -1,67 +1,64 @@
-document.getElementById('registrationForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+document.addEventListener('DOMContentLoaded', loadEntries);
 
-    const username = document.getElementById('username').value;
+const form = document.getElementById('registrationForm');
+const usersTable = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
+
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const dob = document.getElementById('dob').value;
+    const termsAccepted = document.getElementById('terms').checked;
 
-    // Here, you can add any validation or processing logic
+    // Validate email format
+    const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if (!email.match(emailPattern)) {
+        alert('Please enter a valid email address.');
+        return;
+    }
 
-    // For demonstration, we'll just show a success message
-    document.getElementById('message').innerText = `Registration successful for ${username}!`;
+    // Validate age
+    const age = calculateAge(new Date(dob));
+    if (age < 18 || age > 55) {
+        alert('You must be between 18 and 55 years old.');
+        return;
+    }
 
-    // Optionally, clear the form fields
-    this.reset();
+    // Create a new row in the table
+    const newRow = usersTable.insertRow();
+    newRow.insertCell(0).textContent = name;
+    newRow.insertCell(1).textContent = email;
+    newRow.insertCell(2).textContent = password;
+    newRow.insertCell(3).textContent = dob;
+    newRow.insertCell(4).textContent = termsAccepted ? 'Yes' : 'No';
+
+    // Save entry to localStorage
+    saveEntry({ name, email, password, dob, termsAccepted });
+    form.reset();
 });
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+
+function calculateAge(dob) {
+    const diff = Date.now() - dob.getTime();
+    const ageDate = new Date(diff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+function saveEntry(entry) {
+    const entries = JSON.parse(localStorage.getItem('entries')) || [];
+    entries.push(entry);
+    localStorage.setItem('entries', JSON.stringify(entries));
 }
 
-h1 {
-    text-align: center;
-}
-
-label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #218838;
-}
-
-#message {
-    margin-top: 10px;
-    text-align: center;
+function loadEntries() {
+    const entries = JSON.parse(localStorage.getItem('entries')) || [];
+    entries.forEach(entry => {
+        const newRow = usersTable.insertRow();
+        newRow.insertCell(0).textContent = entry.name;
+        newRow.insertCell(1).textContent = entry.email;
+        newRow.insertCell(2).textContent = entry.password;
+        newRow.insertCell(3).textContent = entry.dob;
+        newRow.insertCell(4).textContent = entry.termsAccepted ? 'Yes' : 'No';
+    });
 }
