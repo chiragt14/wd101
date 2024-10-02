@@ -1,129 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
-</head>
-<body>
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
 
-    <h1>Registration Form</h1>
-    <form id="registrationForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required><br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" required><br><br>
-        
-        <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" required><br><br>
-        
-        <label>
-            <input type="checkbox" id="terms" required>
-            Accept Terms?
-        </label><br><br>
-        
-        <button type="submit">Submit</button>
-    </form>
+h1 {
+    text-align: center;
+    color: #4a4a4a;
+}
 
-    <table id="registrationTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Dob</th>
-                <th>Accepted terms?</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
 
-    <script>
-        const registrationForm = document.getElementById('registrationForm');
-        const registrationTable = document.getElementById('registrationTable').getElementsByTagName('tbody')[0];
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
 
-        // Load existing entries from localStorage
-        window.onload = () => {
-            const entries = JSON.parse(localStorage.getItem('registrationEntries')) || [];
-            entries.forEach(entry => addRow(entry));
-        };
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
-        registrationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+input[type="checkbox"] {
+    margin-right: 5px;
+}
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const dob = document.getElementById('dob').value;
-            const termsAccepted = document.getElementById('terms').checked;
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
 
-            const age = calculateAge(new Date(dob));
-            if (age < 18 || age > 55) {
-                alert('You must be between 18 and 55 years old.');
-                return;
-            }
+button:hover {
+    background-color: #45a049;
+}
 
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-            const entry = { name, email, password, dob, termsAccepted };
-            addRow(entry);
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
 
-            // Save entries to localStorage
-            const existingEntries = JSON.parse(localStorage.getItem('registrationEntries')) || [];
-            existingEntries.push(entry);
-            localStorage.setItem('registrationEntries', JSON.stringify(existingEntries));
+th {
+    background-color: #f2f2f2;
+}
 
-            // Reset the form
-            registrationForm.reset();
-        });
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
 
-        function addRow(entry) {
-            const newRow = registrationTable.insertRow();
-            newRow.insertCell(0).innerText = entry.name;
-            newRow.insertCell(1).innerText = entry.email;
-            newRow.insertCell(2).innerText = entry.password;
-            newRow.insertCell(3).innerText = entry.dob;
-            newRow.insertCell(4).innerText = entry.termsAccepted ? 'Yes' : 'No';
-        }
-
-        function calculateAge(dob) {
-            const today = new Date();
-            let age = today.getFullYear() - dob.getFullYear();
-            const m = today.getMonth() - dob.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-                age--;
-            }
-            return age;
-        }
-    </script>
-
-</body>
-</html>
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
