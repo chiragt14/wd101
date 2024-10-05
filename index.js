@@ -1,62 +1,64 @@
-const registrationForm = document.getElementById('registrationForm');
-const registrationTable = document.getElementById('registrationTable').getElementsByTagName('tbody')[0];
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registrationForm');
+    const userTableBody = document.querySelector('#userTable tbody');
+    const errorDiv = document.getElementById('error');
 
-// Load existing entries from localStorage
-window.onload = () => {
-    const entries = JSON.parse(localStorage.getItem('registrationEntries')) || [];
-    entries.forEach(entry => addRow(entry));
-};
+    // Load existing users from localStorage
+    const loadUsers = () => {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        users.forEach(addRowToTable);
+    };
 
-registrationForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+    // Add a row to the table
+    const addRowToTable = (user) => {
+        const row = userTableBody.insertRow();
+        row.insertCell(0).textContent = user.name;
+        row.insertCell(1).textContent = user.email;
+        row.insertCell(2).textContent = user.password;
+        row.insertCell(3).textContent = user.dob;
+        row.insertCell(4).textContent = user.terms ? 'Yes' : 'No';
+    };
 
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const dob = document.getElementById('dob').value;
-    const termsAccepted = document.getElementById('terms').checked;
+    // Validate form data
+    const validateForm = (name, email, dob) => {
+        const today = new Date();
+        const age = today.getFullYear() - new Date(dob).getFullYear();
+        const isValidEmail = /\S+@\S+\.\S+/.test(email);
+        if (age < 18 || age > 55) {
+            errorDiv.textContent = 'Age must be between 18 and 55.';
+            return false;
+        }
+        if (!isValidEmail) {
+            errorDiv.textContent = 'Invalid email address.';
+            return false;
+        }
+        errorDiv.textContent = '';
+        return true;
+    };
 
-    const age = calculateAge(new Date(dob));
-    if (age < 18 || age > 55) {
-        alert('You must be between 18 and 55 years old.');
-        return;
-    }
+    // Handle form submission
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-        alert('Please enter a valid email address.');
-        return;
-    }
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const dob = document.getElementById('dob').value;
+        const terms = document.getElementById('terms').checked;
 
-    const entry = { name, email, password, dob, termsAccepted };
-    addRow(entry);
+        if (validateForm(name, email, dob)) {
+            const user = { name, email, password, dob, terms };
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            addRowToTable(user);
 
-    // Save entries to localStorage
-    const existingEntries = JSON.parse(localStorage.getItem('registrationEntries')) || [];
-    existingEntries.push(entry);
-    localStorage.setItem('registrationEntries', JSON.stringify(existingEntries));
+            // Reset form fields
+            form.reset();
+        }
+    });
 
-    // Reset the form
-    registrationForm.reset();
+    // Load users when the page is loaded
+    loadUsers();
 });
 
-function addRow(entry) {
-    const newRow = registrationTable.insertRow();
-    newRow.insertCell(0).innerText = entry.name;
-    newRow.insertCell(1).innerText = entry.email;
-    newRow.insertCell(2).innerText = entry.password;
-    newRow.insertCell(3).innerText = entry.dob;
-    newRow.insertCell(4).innerText = entry.termsAccepted ? 'Yes' : 'No';
-}
-
-function calculateAge(dob) {
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-        age--;
-    }
-    return age;
-}
-
-        
